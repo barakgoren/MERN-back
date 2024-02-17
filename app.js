@@ -25,6 +25,6 @@ app.use('/posts', postRouter);
 
 app.listen(port, '0.0.0.0', () => {
     console.log("Server Started");
-    mongoose.connect('mongodb://localhost:27017/SkinderApp')
-        .then(() => console.log("MongoDB Connected"));
+    mongoose.connect(`mongodb+srv://${process.env.USER_DB}:${process.env.PASS_DB}@cluster0.frzuroc.mongodb.net/SkinderApp`)
+        .then(() => console.log("MongoDB Atlas Connected"));
 })
