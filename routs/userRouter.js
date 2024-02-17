@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
         cb(null, Date.now() + path.extname(file.originalname)); // Use the original file extension
     },
 });
-const upload = multer({ storage: storage});
+const upload = multer({ storage: storage });
 
 
 //--------------------------------------- Gets -----------------------------------------------------
@@ -61,18 +61,24 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ message: 'Invalid password' });
         }
         let token = genToken(user._id);
-        return res.status(200).cookie('access-token', token, { httpOnly: true, maxAge: 15 * 24 * 60 * 60 * 1000 }).json(user);
+        return res.status(200).cookie('access-token', token,
+            {
+                httpOnly: true,
+                maxAge: 15 * 24 * 60 * 60 * 1000,
+                secure: true,
+                sameSite: 'none'
+            }).json(user);
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Server error' });
     }
 });
 
-router.post('/logout', (req, res) =>{
+router.post('/logout', (req, res) => {
     res.clearCookie('access-token'); // clear the session cookie in the user's browser
     console.log(req.cookies['access-token']);
     res.status(200).json({ message: 'Logged out' });
- });
+});
 
 router.post('/', upload.single('file'), async (req, res) => {
     req.body.password = await bcrypt.hash(req.body.password.toString(), 8);
