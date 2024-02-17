@@ -22,11 +22,10 @@ module.exports.isAdmin = (req, res, next) => {
 };
 
 module.exports.isAuth = (req, res, next) => {
-    if(!req.headers.cookie) {
-        res.status(401).json({ message: 'Unauthorized1' });
-        return;
-    }
     const token = req.cookies['access-token'];
+    if(!token) {
+        return res.status(404).json({ message: 'No User' });
+    }
     jwt.verify(token, module.exports.secretKey, (err, decoded) => {
         if (err) {
             console.log(err);

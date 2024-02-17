@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const port = 3001;
 const userRouter = require('./routs/userRouter');
 const productRouter = require('./routs/productRouter');
+const postRouter = require('./routs/postRouter');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
@@ -19,6 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static('public'));
 app.use('/users', userRouter);
 app.use('/products', productRouter);
+app.use('/posts', postRouter);
 
 app.listen(port, '0.0.0.0', () => {
     console.log("Server Started");

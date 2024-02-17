@@ -18,6 +18,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage});
 
 
+//--------------------------------------- Gets -----------------------------------------------------
 router.get('/', isAdmin, (req, res) => {
     UserModel
         .find()
@@ -40,19 +41,15 @@ router.get('/name/:name', isAuth, (req, res) => {
 
 })
 
-router.post('/', upload.single('file'), async (req, res) => {
-    req.body.password = await bcrypt.hash(req.body.password.toString(), 8);
-    const user = new UserModel(req.body);
-    user.image = req.file.filename;
-    console.log(user);
-    user.save()
+router.get('/me', isAuth, (req, res) => {
+    UserModel
+        .findById(req.userId)
         .then(result => res.status(200).json(result))
-        .catch(err => {
-            console.log(err);
-            res.status(401).json(err)
-        });
-})
+        .catch(err => res.status(404).json(err))
+});
 
+
+//--------------------------------------- Posts -----------------------------------------------------
 router.post('/login', async (req, res) => {
     try {
         const user = await UserModel.findOne({ email: req.body.email });
@@ -71,12 +68,37 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.get('/me', isAuth, (req, res) => {
+router.post('/logout', (req, res) =>{
+    res.clearCookie('access-token'); // clear the session cookie in the user's browser
+    console.log(req.cookies['access-token']);
+    res.status(200).json({ message: 'Logged out' });
+ });
+
+router.post('/', upload.single('file'), async (req, res) => {
+    req.body.password = await bcrypt.hash(req.body.password.toString(), 8);
+    const user = new UserModel(req.body);
+    user.image = req.file.filename;
+    console.log(user);
+    user.save()
+        .then(result => res.status(200).json(result))
+        .catch(err => {
+            console.log(err);
+            res.status(401).json(err)
+        });
+})
+
+// Post for creating new post
+router.post('/post', isAuth, (req, res) => {
     UserModel
         .findById(req.userId)
-        .then(result => res.status(200).json(result))
+        .then(user => {
+            user.posts.push(req.body);
+            user.save()
+                .then(result => res.status(200).json(result))
+                .catch(err => res.status(404).json(err))
+        })
         .catch(err => res.status(404).json(err))
-});
+})
 
 
 module.exports = router;
