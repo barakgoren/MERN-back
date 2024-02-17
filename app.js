@@ -13,7 +13,7 @@ const cookieParser = require('cookie-parser');
 
 app.use(bodyParser.json());
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: true,
     credentials: true
 }));
 app.use(cookieParser());
