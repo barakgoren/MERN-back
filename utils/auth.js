@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const userModel = require('../models/userModel');
-
-module.exports.secretKey = "BARAKSPROJECT";
+const { config } = require('../config/secret');
 
 module.exports.isAdmin = (req, res, next) => {
     if(!req.headers.cookie) {
@@ -9,7 +8,7 @@ module.exports.isAdmin = (req, res, next) => {
         return;
     }
     const token = req.headers.cookie.split('=')[1];
-    const decodedToken = jwt.verify(token, module.exports.secretKey);
+    const decodedToken = jwt.verify(token, config.jwtSecretKey);
     userModel.findById(decodedToken._id)
         .then(user => {
             if (user.role.includes('Admin')) {
@@ -26,7 +25,7 @@ module.exports.isAuth = (req, res, next) => {
     if(!token) {
         return res.status(404).json({ message: 'No User' });
     }
-    jwt.verify(token, module.exports.secretKey, (err, decoded) => {
+    jwt.verify(token, config.jwtSecretKey, (err, decoded) => {
         if (err) {
             console.log(err);
             res.status(401).json({ message: 'Unauthorized2' });
@@ -38,6 +37,6 @@ module.exports.isAuth = (req, res, next) => {
 }
 
 module.exports.genToken = (userId) => {
-    let token = jwt.sign({ _id: userId }, module.exports.secretKey, { expiresIn: "15 days" });
+    let token = jwt.sign({ _id: userId }, config.jwtSecretKey, { expiresIn: "15 days" });
     return token;
 }
