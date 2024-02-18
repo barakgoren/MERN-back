@@ -17,6 +17,14 @@ app.use(cors({
     credentials: true
 }));
 app.use(cookieParser());
+// Middleware to log request cookies
+app.use((req, res, next) => {
+    console.log('Incoming request for:', req.path);
+    console.log('Cookies:', req.cookies); // Logs all cookies
+    console.log('Access-Token Cookie:', req.cookies['access-token']); // Logs the specific token
+    next(); // Proceed to the next middleware or route handler
+});
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static('public'));
 app.use('/users', userRouter);
