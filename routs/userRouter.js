@@ -67,7 +67,8 @@ router.post('/login', async (req, res) => {
                 httpOnly: true,
                 maxAge: 15 * 24 * 60 * 60 * 1000,
                 secure: true,
-                sameSite: 'none'
+                sameSite: 'none',
+                path: '/',
             }).json(user);
     } catch (err) {
         console.error(err);
