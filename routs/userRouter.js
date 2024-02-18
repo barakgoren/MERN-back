@@ -61,6 +61,7 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ message: 'Invalid password' });
         }
         let token = genToken(user._id);
+        console.log("Token Generated: ", token);
         return res.status(200).cookie('access-token', token,
             {
                 httpOnly: true,
