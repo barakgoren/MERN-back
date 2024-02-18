@@ -22,6 +22,8 @@ module.exports.isAdmin = (req, res, next) => {
 
 module.exports.isAuth = (req, res, next) => {
     const token = req.cookies['access-token'];
+    console.log("inside isAuth");
+    console.log(token);
     if(!token) {
         return res.status(404).json({ message: 'No User' });
     }
