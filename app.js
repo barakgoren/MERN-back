@@ -9,11 +9,19 @@ const postRouter = require('./routs/postRouter');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const allowedOrigins = ['https://barak-social-project.netlify.app', 'https://another-allowed-origin.com'];
+
 
 
 app.use(bodyParser.json());
 app.use(cors({
-    origin: true,
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
 }));
 app.use(cookieParser());
