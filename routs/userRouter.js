@@ -76,8 +76,13 @@ router.post('/login', async (req, res) => {
 });
 
 router.post('/logout', (req, res) => {
-    res.clearCookie('access-token'); // clear the session cookie in the user's browser
-    console.log(req.cookies['access-token']);
+    res.clearCookie('access-token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+        // If you initially set a domain, you need to specify it here as well
+        // domain: '.yourdomain.com'
+    });    console.log(req.cookies['access-token']);
     res.status(200).json({ message: 'Logged out' });
 });
 
