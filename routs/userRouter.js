@@ -83,10 +83,10 @@ router.post('/logout', (req, res) => {
 router.post('/', upload.single('file'), async (req, res) => {
     req.body.password = await bcrypt.hash(req.body.password.toString(), 8);
     const user = new UserModel(req.body);
-    if (!req.file.filename) {
-        user.image = 'default.jpg';
-    } else {
+    try{
         user.image = req.file.filename;
+    } catch (err) {
+        user.image = 'default.jpg';
     }
     console.log(user);
     user.save()
