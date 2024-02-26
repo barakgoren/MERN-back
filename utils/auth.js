@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const userModel = require('../models/userModel');
 const { config } = require('../config/secret');
+let counter = 0;
 
 module.exports.isAdmin = (req, res, next) => {
     if(!req.headers.cookie) {
@@ -21,9 +22,9 @@ module.exports.isAdmin = (req, res, next) => {
 };
 
 module.exports.isAuth = (req, res, next) => {
-    const token = req.cookies['access-token'];
-    console.log("inside isAuth");
-    console.log(token);
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    console.log(`inside isAuth ${counter++}`);
     if(!token) {
         return res.status(404).json({ message: 'No User' });
     }

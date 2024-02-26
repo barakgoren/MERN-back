@@ -9,7 +9,7 @@ const UserModel = require('../models/userModel');
 // GET all posts
 router.get('/', async (req, res) => {
     try {
-        const posts = await PostModel.find().populate('authorId');
+        const posts = await PostModel.find().populate('authorId').sort({ createdAt: -1 });
         res.json(posts);
     } catch (err) {
         res.status(500).json({ message: err.message });
