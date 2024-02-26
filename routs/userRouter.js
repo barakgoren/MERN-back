@@ -76,14 +76,18 @@ router.post('/logout', (req, res) => {
         sameSite: 'none',
         // If you initially set a domain, you need to specify it here as well
         // domain: '.yourdomain.com'
-    });    console.log(req.cookies['access-token']);
+    }); console.log(req.cookies['access-token']);
     res.status(200).json({ message: 'Logged out' });
 });
 
 router.post('/', upload.single('file'), async (req, res) => {
     req.body.password = await bcrypt.hash(req.body.password.toString(), 8);
     const user = new UserModel(req.body);
-    user.image = req.file.filename;
+    if (!req.file.filename) {
+        user.image = 'default.jpg';
+    } else {
+        user.image = req.file.filename;
+    }
     console.log(user);
     user.save()
         .then(result => res.status(200).json(result))
